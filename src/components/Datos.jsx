@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PlaceIcon from '@mui/icons-material/Place';
 
 const Datos = () => {
   const [currentTemperature, setCurrentTemperature] = useState(null);
@@ -8,6 +9,7 @@ const Datos = () => {
     day: 'numeric',
     month: 'short'
   }));
+  const [timezone, setTimezone] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +28,7 @@ const Datos = () => {
           day: 'numeric',
           month: 'short'
         }));
+        setTimezone(data.timezone);
       } catch (error) {
         console.error('Error fetching weather data:', error);
       }
@@ -47,6 +50,10 @@ const Datos = () => {
 
       <p className="fecha-actual text-sm text-center text-white" style={{ fontFamily: "Raleway, sans-serif", textAlign: "center", marginTop: "20px", fontSize: "14px" }}>
         Today • {currentDate}
+      </p>
+
+      <p className="fecha-actual text-sm text-center text-white" style={{ fontFamily: "Raleway, sans-serif", textAlign: "center", marginTop: "20px", fontSize: "14px" }}>
+         <PlaceIcon /> {timezone}
       </p>
 
     </>
