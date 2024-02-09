@@ -28,16 +28,16 @@ export default function Cards() {
   return ( 
     <div className="flex flex-wrap ml-[20%] ">
       {forecastData.map((forecast, index) => (
-        <div key={index} className="w-1/6 p-2 ">
-          <div className="border rounded-lg p-2">
+        <div key={index} className="w-1/6 p-2 mt-4" >
+          <div className="text-white rounded-lg p-2 bg-slate-700">
           
-            <p className="text-lg font-semibold ">{forecast.temp.day}°C</p>
+            <p className="text-lg font-semibold text-center ">{Math.round(forecast.temp.day)}°C</p>
             <img
               className="w-full h-32 object-cover rounded-t-lg"
               src="LightCloud.png"
               alt="Weather"
             />
-            <p className="text-sm ">{new Date(forecast.dt * 600000).toDateString()}</p>
+            <p className="text-sm text-center">{new Date(forecast.dt * 600000).toDateString()}</p>
           </div>
         </div>
       ))}

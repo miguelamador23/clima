@@ -62,13 +62,13 @@ intervalId = setInterval(fetchData, 600000);
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[40%] h-[65%] z-10"
           />
         </div>
-        <p className="temperatura font-raleway text-4xl text-center mt-[50%]">
-          {currentTemperature}°C
+        <p className="temperatura font-raleway text-4xl text-center mt-[50%] text-white">
+          {Math.round(currentTemperature)}°C
         </p>
-        <p className="clima font-raleway text-xl text-center mb-4">
+        <p className="clima font-raleway text-xl text-center mb-4 text-white">
           {currentWeather}
         </p>
-        <p className="fecha font-raleway text-lg text-center mb-2">
+        <p className="fecha font-raleway text-lg text-center mb-2 text-white">
           {currentDate}
         </p>
        <span className="flex items-center justify-center">
@@ -91,7 +91,7 @@ intervalId = setInterval(fetchData, 600000);
              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
            />
          </svg>
-         <p>London</p>
+         <p className="text-white">London</p>
        </span>
       </div>
     </>
