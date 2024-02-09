@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
+import useGeolocation from "./useGeolocation";
 import Datos from "./Datos";
 
 export default function Left() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentTemperature, setCurrentTemperature] = useState(null);
   const [weatherImage, setWeatherImage] = useState("");
+  const { position, error } = useGeolocation();
+  const [userPermission, setUserPermission] = useState(false);
 
   useEffect(() => {
     let intervalId;
 
     const fetchData = async () => {
       try {
-        const lat = 51.5074;
-        const lon = -0.1278;
-        const apiKey = "1fab01c07468ce8a7d396af998fe84c5";
-        const apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily&appid=${apiKey}&units=metric`;
+        if (position && userPermission) { // Verificar posición y permiso
+          const lat = position.latitude;
+          const lon = position.longitude;
+          const apiKey = "1fab01c07468ce8a7d396af998fe84c5";
+          const apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily&appid=${apiKey}&units=metric`;
 
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        setCurrentTemperature(data.current.temp);
-        const weatherImg = getWeatherImage(data.current.weather[0].main);
-        setWeatherImage(weatherImg);
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          setCurrentTemperature(data.current.temp);
+          const weatherImg = getWeatherImage(data.current.weather[0].main);
+          setWeatherImage(weatherImg);
+        }
       } catch (error) {
         console.error("Error fetching temperature:", error);
       }
@@ -30,7 +35,13 @@ export default function Left() {
     intervalId = setInterval(fetchData, 600000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [position, userPermission]); // <-- Se ejecuta cuando la posición o el permiso cambian
+
+  useEffect(() => {
+    if (position && !error) {
+      setUserPermission(true);
+    }
+  }, [position, error]);
 
   const getWeatherImage = (weather) => {
     switch (weather) {
@@ -90,7 +101,7 @@ export default function Left() {
           />
         </div>
 
-        <Datos/>
+        <Datos />
       </div>
     </>
   );
