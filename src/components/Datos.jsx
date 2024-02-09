@@ -14,11 +14,11 @@ const Datos = () => {
   const [locationPermissionGranted, setLocationPermissionGranted] = useState(null);
 
   useEffect(() => {
-    if (locationPermissionGranted && locationData) { // Verificar permiso y datos de ubicación
+    if (locationPermissionGranted && locationData) { 
       fetchWeatherData(locationData.latitude, locationData.longitude);
     } else {
-      // Si no se otorga el permiso, cargar los datos climáticos de Londres
-      fetchWeatherData(51.5074, -0.1278); // Coordenadas de Londres
+
+      fetchWeatherData(51.5074, -0.1278);
     }
   }, [locationPermissionGranted, locationData]);
 
