@@ -60,14 +60,14 @@ export default function Cards() {
     return (
       <div
         key={index}
-        className="w-1/5 p-1 mt-4 flex items-center justify-center ml-[-5%]" // Mueve las tarjetas a la derecha
+        className="w-1/5 p-1 mt-4 flex items-center justify-center ml-[-5%]" 
       >
         <div className="text-white rounded-lg p-2 bg-slate-700 max-w-md mx-auto">
           <p className="text-lg font-semibold text-center">
             {Math.round(forecast.temp.day)}°C
           </p>
           <img
-            className="w-24 h-24 object-cover rounded-t-lg mx-auto mb-2" // Hace las imágenes un poco más pequeñas y las centra
+            className="w-24 h-24 object-cover rounded-t-lg mx-auto mb-2"
             src={weatherImage}
             alt="Weather"
           />
