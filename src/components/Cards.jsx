@@ -25,22 +25,59 @@ export default function Cards() {
     fetchForecastData();
   }, []);
 
-  return ( 
-    <div className="flex flex-wrap ml-[20%] ">
-      {forecastData.map((forecast, index) => (
-        <div key={index} className="w-1/6 p-2 mt-4" >
-          <div className="text-white rounded-lg p-2 bg-slate-700">
-          
-            <p className="text-lg font-semibold text-center ">{Math.round(forecast.temp.day)}°C</p>
-            <img
-              className="w-full h-32 object-cover rounded-t-lg"
-              src="LightCloud.png"
-              alt="Weather"
-            />
-            <p className="text-sm text-center">{new Date(forecast.dt * 600000).toDateString()}</p>
-          </div>
+  const getWeatherImage = (weather) => {
+    switch (weather) {
+      case "Clear":
+        return "Clear.png";
+      case "Hail":
+        return "Hail.png";
+      case "Clouds":
+        return "HeavyCloud.png";
+      case "Rain":
+        return "HeavyRain.png";
+      case "LightCloud":
+        return "LightCloud.png";
+      case "LightRain":
+        return "LightRain.png";
+      case "Shower":
+        return "Shower.png";
+      case "Sleet":
+        return "Sleet.png";
+      case "Snow":
+        return "Snow.png";
+      case "Thunderstorm":
+        return "Thunderstorm.png";
+      default:
+        return "default.png";
+    }
+  };
+
+  return (
+<div className="flex flex-wrap ml-[20%]">
+  {forecastData.map((forecast, index) => {
+    const weatherImage = getWeatherImage(forecast.weather[0].main);
+
+    return (
+      <div
+        key={index}
+        className="w-1/5 p-1 mt-4 flex items-center justify-center ml-[-5%]" // Mueve las tarjetas a la derecha
+      >
+        <div className="text-white rounded-lg p-2 bg-slate-700 max-w-md mx-auto">
+          <p className="text-lg font-semibold text-center">
+            {Math.round(forecast.temp.day)}°C
+          </p>
+          <img
+            className="w-24 h-24 object-cover rounded-t-lg mx-auto mb-2" // Hace las imágenes un poco más pequeñas y las centra
+            src={weatherImage}
+            alt="Weather"
+          />
+          <p className="text-sm text-center">
+            {new Date(forecast.dt * 1000).toDateString()}
+          </p>
         </div>
-      ))}
-    </div>
+      </div>
+    );
+  })}
+</div>
   );
 }
