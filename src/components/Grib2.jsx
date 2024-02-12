@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import LinearProgress from "@mui/material/LinearProgress";
-import "./Cards.css"
 
 function Grib2({ selectedState, updateWeatherData }) {
   const [weatherData, setWeatherData] = useState(null);
