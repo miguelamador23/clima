@@ -8,6 +8,7 @@ import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import "./style.css";
 
 const CircleButton = styled(Button)`
@@ -26,59 +27,6 @@ const imageContainer2Style = {
   transform: "translate(-50%, -50%)",
 };
 
-const allStates = [
-  "Alabama",
-  "Alaska",
-  "Arizona",
-  "Arkansas",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "Delaware",
-  "Florida",
-  "Georgia",
-  "Hawaii",
-  "Idaho",
-  "Illinois",
-  "Indiana",
-  "Iowa",
-  "Kansas",
-  "Kentucky",
-  "Louisiana",
-  "Maine",
-  "Maryland",
-  "Massachusetts",
-  "Michigan",
-  "Minnesota",
-  "Mississippi",
-  "Missouri",
-  "Montana",
-  "Nebraska",
-  "Nevada",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "New York",
-  "North Carolina",
-  "North Dakota",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Rhode Island",
-  "South Carolina",
-  "South Dakota",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Vermont",
-  "Virginia",
-  "Washington",
-  "West Virginia",
-  "Wisconsin",
-  "Wyoming",
-];
-
 function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
   const [temperature, setTemperature] = useState(null);
   const [description, setDescription] = useState("");
@@ -86,9 +34,10 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedState, setSelectedState] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredStates, setFilteredStates] = useState(allStates);
+  const [filteredCities, setFilteredCities] = useState([]);
   const [askedForLocation, setAskedForLocation] = useState(false);
   const [weatherImage, setWeatherImage] = useState(null);
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
 
   const openMenu = () => {
     setIsMenuOpen(true);
@@ -102,15 +51,14 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
     if (selectedState !== "Current Location") {
       try {
         const response = await fetch(
-          `https://api.openweathermap.org/geo/1.0/direct?q=${selectedState}&limit=1&appid=deccf3474efa27ddf6ec3fba5099fa33`
+          `https://api.openweathermap.org/geo/1.0/direct?q=${selectedState}&limit=5&appid=deccf3474efa27ddf6ec3fba5099fa33`
         );
         const data = await response.json();
 
         if (data && data.length > 0) {
-          const cityLatitude = data[0].lat;
-          const cityLongitude = data[0].lon;
-          obtenerPronosticoPorCoordenadas(cityLatitude, cityLongitude);
-          setSelectedCity(selectedState);
+          const city = data[0];
+          obtenerPronosticoPorCoordenadas(city.lat, city.lon);
+          setSelectedCity(city.name);
         }
       } catch (error) {
         console.error("Error al obtener las coordenadas de la ciudad:", error);
@@ -133,10 +81,8 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
         setTemperature(celsius);
         setDescription(data.current.weather[0].description);
 
-
         const weatherImg = getWeatherImage(data.current.weather[0].main);
         setWeatherImage(weatherImg);
-
 
         updateWeatherData({ temperature: celsius, description });
       })
@@ -166,13 +112,24 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
     }
   };
 
-  const handleSearchInputChange = (event) => {
+  const handleSearchInputChange = async (event) => {
     const query = event.target.value;
     setSearchQuery(query);
-    const filtered = allStates.filter((state) =>
-      state.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredStates(filtered);
+
+    if (query.trim() === "") {
+      setFilteredCities([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=deccf3474efa27ddf6ec3fba5099fa33`
+      );
+      const data = await response.json();
+      setFilteredCities(data);
+    } catch (error) {
+      console.error("Error al buscar ciudades:", error);
+    }
   };
 
   const updateCurrentDate = () => {
@@ -216,12 +173,15 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
   };
 
   return (
-    <div className="colored-column" style={{ width: "29%", height: "100%" }}>
+    <div
+      className="colored-column"
+      style={{ width: isSmallScreen ? "100%" : "29%", height: "100%" }}
+    >
       <Stack spacing={20} direction="row" alignItems="center">
         <Button
           variant="contained"
           color="primary"
-          className="search-button"
+          className="search-button bg-blue-500 text-white font-bold py-2 px-4 rounded"
           style={{
             marginLeft: "10px",
             marginTop: "10px",
@@ -245,26 +205,38 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
         </CircleButton>
       </Stack>
 
-      <Drawer anchor="left" open={isMenuOpen} onClose={closeMenu}>
-        <div>
-          <input
-            type="text"
-            placeholder="Search states"
-            onChange={handleSearchInputChange}
-            value={searchQuery}
-          />
+      <Drawer
+        className="left-0 w-100"
+        open={isMenuOpen}
+        onClose={closeMenu}
+        style={{ backgroundColor: "#22233c" }}
+      >
+        <div class="bg-gray-100 p-4">
+
         </div>
+        <div className="flex items-center">
+  <input
+    type="text"
+    placeholder="search location"
+    onChange={handleSearchInputChange}
+    value={searchQuery}
+    className="w-full h-full p-4 rounded-lg border-2 border-gray-300 mr-2"
+  />
+  <button className="bg-blue-500 text-white py-2 px-4 rounded h-full">Search</button>
+</div>
+
         <List>
-          {filteredStates.map((state, index) => (
+          {filteredCities.map((city, index) => (
             <ListItem
               button
               key={index}
               onClick={() => {
                 setIsMenuOpen(false);
-                setSelectedState(state);
+                setSelectedState(city.name);
               }}
+              className="px-4 py-2 hover:bg-gray-100"
             >
-              {state}
+              {city.name}
             </ListItem>
           ))}
         </List>
@@ -273,7 +245,7 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
       <div style={{ position: "relative" }}>
         <img
           src="Cloud-background.png"
-          alt="Mi Imagen"
+          alt="Background"
           style={{
             width: "100%",
             position: "absolute",
@@ -305,7 +277,7 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
               fontSize: "50px",
             }}
           >
-                {temperature}{" "}
+            {temperature}{" "}
             <span
               style={{
                 fontSize: "30px",
@@ -337,9 +309,6 @@ function Sidebar({ setSelectedCity, setCurrentLocation, updateWeatherData }) {
           </Stack>
         </div>
       )}
-
-      
-
     </div>
   );
 }

@@ -4,12 +4,14 @@ import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import './style.css';
 
 function Grib({ selectedCity, updateWeatherData }) {
     const [locationPermission, setLocationPermission] = useState(false);
     const [weatherData, setWeatherData] = useState([]);
     const [weatherDataLocation, setWeatherDataLocation] = useState([]);
+    const isSmallScreen = useMediaQuery('(max-width:600px)');
 
     const formatDate = (timestamp, index) => {
         const currentDate = new Date();
@@ -118,20 +120,20 @@ function Grib({ selectedCity, updateWeatherData }) {
     };
 
     return (
-        <Grid container spacing={2} className="weather-grid">
-            {selectedWeatherData.map((day, index) => (
-                <Grid item xs={12} sm={6} md={2} key={index}>
-                    <Card className="weather-card" style={{ backgroundColor: '#344353', color: 'white', height: '100%', display: 'flex', flexDirection: 'column' }}> 
-                        <CardHeader title={formatDate(day.dt, index)} className="small-title" />
-                        <CardContent>
-                            <img src={getWeatherImage(day.weather[0].main)} alt={day.weather[0].main} className="weather-icon" />
-                            <p className="temp">{Math.round(day.main.temp - 273.15)}°C</p>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            ))}
+        <Grid container spacing={1} className="weather-grid" style={{ textAlign: isSmallScreen ? 'center' : 'center' }}>
+            {selectedWeatherData.map((day, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index} style={{ margin: "-19.5px" }}>
+                    <Card className="weather-card" style={{ backgroundColor: '#344353', color: 'white', height: 'auto', width: "100%", display: 'flex', flexDirection: 'column' }}>
+                        <CardHeader title={formatDate(day.dt, index)} className="small-title" />
+                        <CardContent>
+                            <img src={getWeatherImage(day.weather[0].main)} alt={day.weather[0].main} className="weather-icon" />
+                            <p className="temp">{Math.round(day.main.temp - 273.15)}°C</p>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            ))}
         </Grid>
     );
-}
+}    
 
 export default Grib;

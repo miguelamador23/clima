@@ -1,5 +1,3 @@
-// App.js
-
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Grib from './components/Grib';
@@ -16,7 +14,6 @@ function App() {
 
   const handleSelectedStateChange = (newSelectedState) => {
     setSelectedCity(newSelectedState);
-    // Actualizar los datos del clima en Grib y Grib2 cuando se selecciona una ciudad
     updateWeatherData(newData);
   };
 
@@ -25,10 +22,10 @@ function App() {
       <Sidebar
         setSelectedCity={setSelectedCity}
         setCurrentLocation={setCurrentLocation}
-        updateWeatherData={handleSelectedStateChange} // Cambiado para pasar la función handleSelectedStateChange
+        updateWeatherData={handleSelectedStateChange}
       />
       <div className="grib">
-        <Grib selectedCity={selectedCity} updateWeatherData={updateWeatherData} />
+        <Grib selectedCity={selectedCity} updateWeatherData={updateWeatherData}  />
         <Grib2 selectedState={selectedCity} updateWeatherData={updateWeatherData} />
       </div>
     </div>
